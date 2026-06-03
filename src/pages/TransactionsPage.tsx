@@ -230,14 +230,14 @@ export function TransactionsPage() {
             </p>
             <div className="flex gap-2">
               <Button
-                variant="secondary"
+                variant="neutral"
                 onClick={prevPage}
                 disabled={offset === 0}
               >
                 Previous
               </Button>
               <Button
-                variant="secondary"
+                variant="neutral"
                 onClick={nextPage}
                 disabled={transactions.length < limit}
               >

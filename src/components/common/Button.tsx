@@ -3,27 +3,37 @@ import type { ButtonHTMLAttributes, PropsWithChildren } from "react";
 type ButtonProps = PropsWithChildren<
   ButtonHTMLAttributes<HTMLButtonElement>
 > & {
-  variant?: "primary" | "secondary" | "danger";
+  variant?: "default" | "neutral" | "destructive" | "reverse";
+  size?: "default" | "sm" | "lg";
 };
 
-const variants = {
-  primary:
-    "bg-blue-600 text-main-foreground border-border hover:bg-blue-700 active:translate-x-boxShadowX active:translate-y-boxShadowY active:shadow-none",
-  secondary:
-    "bg-secondary-background text-foreground border-border hover:bg-blue-100 active:translate-x-boxShadowX active:translate-y-boxShadowY active:shadow-none",
-  danger:
-    "bg-red-600 text-main-foreground border-border hover:bg-red-700 active:translate-x-boxShadowX active:translate-y-boxShadowY active:shadow-none",
+const variants: Record<string, string> = {
+  default:
+    "text-main-foreground bg-main border-border shadow-shadow hover:translate-x-boxShadowX hover:translate-y-boxShadowY hover:shadow-none",
+  neutral:
+    "text-foreground bg-secondary-background border-border shadow-shadow hover:translate-x-boxShadowX hover:translate-y-boxShadowY hover:shadow-none",
+  destructive:
+    "text-main-foreground bg-red-600 border-border shadow-shadow hover:translate-x-boxShadowX hover:translate-y-boxShadowY hover:shadow-none",
+  reverse:
+    "text-main-foreground bg-main border-border hover:translate-x-reverseBoxShadowX hover:translate-y-reverseBoxShadowY hover:shadow-shadow",
+};
+
+const sizes: Record<string, string> = {
+  default: "h-10 px-4 py-2",
+  sm: "h-9 px-3 text-xs",
+  lg: "h-11 px-8",
 };
 
 export function Button({
   children,
   className = "",
-  variant = "primary",
+  variant = "default",
+  size = "default",
   ...props
 }: ButtonProps) {
   return (
     <button
-      className={`inline-flex items-center justify-center border-2 px-4 py-2 text-sm font-bold uppercase tracking-tight shadow-shadow-sm transition-all duration-75 focus-visible:outline-2 focus-visible:outline-border disabled:cursor-not-allowed disabled:opacity-60 disabled:active:translate-x-0 disabled:active:translate-y-0 disabled:active:shadow-shadow-sm ${variants[variant]} ${className}`}
+      className={`inline-flex items-center justify-center whitespace-nowrap rounded-base text-sm font-base border-2 transition-all gap-2 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 ${variants[variant]} ${sizes[size]} ${className}`}
       {...props}
     >
       {children}

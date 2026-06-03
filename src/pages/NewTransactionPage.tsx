@@ -114,7 +114,7 @@ export function NewTransactionPage() {
               <Button
                 key={opt.key}
                 type="button"
-                variant={type === opt.key ? "primary" : "secondary"}
+                variant={type === opt.key ? "default" : "neutral"}
                 onClick={() => {
                   setType(opt.key);
                   setCategoryID("");
@@ -253,7 +253,7 @@ export function NewTransactionPage() {
 
           <div className="flex justify-end gap-2">
             <Link to="/transactions">
-              <Button variant="secondary" type="button">
+              <Button variant="neutral" type="button">
                 Cancel
               </Button>
             </Link>

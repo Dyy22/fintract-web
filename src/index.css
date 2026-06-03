@@ -4,6 +4,7 @@
 
 @layer base {
     :root {
+        --main: #2563eb;
         --background: #f0f0f0;
         --secondary-background: #ffffff;
         --foreground: #000000;
@@ -12,6 +13,7 @@
     }
 
     .dark {
+        --main: #3b82f6;
         --background: #1a1a2e;
         --secondary-background: #16213e;
         --foreground: #e0e0e0;
@@ -22,6 +24,7 @@
 
 body {
     font-family: Inter, system-ui, sans-serif;
+    font-weight: 500;
     margin: 0;
     min-width: 320px;
     min-height: 100vh;

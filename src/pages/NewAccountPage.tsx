@@ -128,7 +128,7 @@ export function NewAccountPage() {
           </label>
           <div className="flex justify-end gap-2">
             <Link to="/accounts">
-              <Button variant="secondary" type="button">
+              <Button variant="neutral" type="button">
                 Cancel
               </Button>
             </Link>

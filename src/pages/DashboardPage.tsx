@@ -60,7 +60,7 @@ export function DashboardPage() {
         </div>
         <div className="flex gap-2">
           <Link to="/accounts">
-            <Button variant="secondary">Manage Accounts</Button>
+            <Button variant="neutral">Manage Accounts</Button>
           </Link>
           <Link to="/transactions/new">
             <Button>Add Transaction</Button>
@@ -95,7 +95,7 @@ export function DashboardPage() {
                 <div className="mt-4">
                   <p className="text-sm text-slate-500">No accounts yet.</p>
                   <Link to="/accounts">
-                    <Button variant="secondary" className="mt-3">
+                    <Button variant="neutral" className="mt-3">
                       Add Account
                     </Button>
                   </Link>
@@ -147,7 +147,7 @@ export function DashboardPage() {
                     No recent transactions.
                   </p>
                   <Link to="/transactions/new">
-                    <Button variant="secondary" className="mt-3">
+                    <Button variant="neutral" className="mt-3">
                       Add Transaction
                     </Button>
                   </Link>
