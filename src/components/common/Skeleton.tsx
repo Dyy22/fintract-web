@@ -5,7 +5,7 @@ type SkeletonProps = {
 export function Skeleton({ className = "" }: SkeletonProps) {
   return (
     <div
-      className={`animate-pulse rounded-none bg-black/10 dark:bg-white/10 ${className}`}
+      className={`animate-pulse rounded-none bg-foreground/10 ${className}`}
     />
   );
 }
@@ -13,7 +13,7 @@ export function Skeleton({ className = "" }: SkeletonProps) {
 export function SkeletonCard({ className = "" }: SkeletonProps) {
   return (
     <div
-      className={`border-2 border-black bg-white p-5 shadow-brutal dark:border-brutal-dark-border dark:bg-brutal-dark-surface ${className}`}
+      className={`border-2 border-border bg-secondary-background p-5 shadow-shadow ${className}`}
     >
       <Skeleton className="mb-3 h-4 w-24" />
       <Skeleton className="h-8 w-48" />

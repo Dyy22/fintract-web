@@ -45,7 +45,7 @@ export class ErrorBoundary extends Component<
       return (
         <div className="flex min-h-[200px] items-center justify-center p-8">
           <div className="text-center">
-            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center border-2 border-black bg-red-100 shadow-brutal-sm dark:border-brutal-dark-border">
+            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center border-2 border-border bg-red-100 shadow-shadow-sm">
               <span className="text-2xl font-bold text-red-600">!</span>
             </div>
             <h3 className="text-lg font-extrabold uppercase tracking-tight">

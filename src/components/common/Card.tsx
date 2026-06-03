@@ -7,7 +7,7 @@ type CardProps = PropsWithChildren<{
 export function Card({ children, className = "" }: CardProps) {
   return (
     <div
-      className={`border-2 border-black bg-white p-5 shadow-brutal dark:border-brutal-dark-border dark:bg-brutal-dark-surface dark:text-brutal-dark-text ${className}`}
+      className={`border-2 border-border bg-secondary-background p-5 shadow-shadow ${className}`}
     >
       {children}
     </div>
