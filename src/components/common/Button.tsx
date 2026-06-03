@@ -18,7 +18,7 @@ export function Button({
     primary:
       "bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500 shadow-sm",
     secondary:
-      "bg-white text-slate-700 border border-slate-300 hover:bg-slate-50 focus:ring-slate-400",
+      "bg-white text-slate-700 border border-slate-300 hover:bg-slate-50 focus:ring-slate-400 dark:bg-slate-700 dark:text-slate-200 dark:border-slate-600 dark:hover:bg-slate-600",
     danger:
       "bg-red-600 text-white hover:bg-red-700 focus:ring-red-500 shadow-sm",
   };

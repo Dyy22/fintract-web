@@ -48,13 +48,13 @@ export class ErrorBoundary extends Component<
             <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-red-100">
               <span className="text-2xl font-bold text-red-600">!</span>
             </div>
-            <h3 className="text-lg font-semibold text-slate-950">
+            <h3 className="text-lg font-semibold text-slate-950 dark:text-slate-100">
               Something went wrong
             </h3>
-            <p className="mt-1 text-sm text-slate-500">
+            <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
               An unexpected error occurred. Please try again.
             </p>
-            <p className="mt-1 text-xs text-slate-400">
+            <p className="mt-1 text-xs text-slate-400 dark:text-slate-500">
               {this.state.error?.message}
             </p>
             <Button className="mt-4" onClick={this.handleRetry}>

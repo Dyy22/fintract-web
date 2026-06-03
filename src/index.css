@@ -9,10 +9,31 @@
     color: #0f172a;
 }
 
+.dark {
+    color-scheme: dark;
+    background: #0f172a;
+    color: #e2e8f0;
+}
+
+html.dark input:not([type="submit"]):not([type="button"]),
+html.dark select,
+html.dark textarea {
+    background: #1e293b;
+    border-color: #475569;
+    color: #e2e8f0;
+}
+
+html.dark input::placeholder,
+html.dark textarea::placeholder {
+    color: #64748b;
+}
+
 body {
     margin: 0;
     min-width: 320px;
     min-height: 100vh;
+    background: inherit;
+    color: inherit;
 }
 
 button,
