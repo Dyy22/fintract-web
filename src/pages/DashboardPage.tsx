@@ -2,6 +2,9 @@ import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "../components/common/Button";
 import { Card } from "../components/common/Card";
+import { NeoEmptyState } from "../components/common/NeoEmptyState";
+import { NeoPageHeader } from "../components/common/NeoPageHeader";
+import { NeoStatCard } from "../components/common/NeoStatCard";
 import { useAccountStore } from "../stores/accountStore";
 import { useReportStore } from "../stores/reportStore";
 import { useTransactionStore } from "../stores/transactionStore";
@@ -51,22 +54,22 @@ export function DashboardPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
-        <div>
-          <h1 className="text-2xl font-bold text-slate-950">Dashboard</h1>
-          <p className="text-sm text-slate-500">
-            Overview of your net worth, accounts, and recent activity.
-          </p>
-        </div>
-        <div className="flex gap-2">
-          <Link to="/accounts">
-            <Button variant="secondary">Manage Accounts</Button>
-          </Link>
-          <Link to="/transactions/new">
-            <Button>Add Transaction</Button>
-          </Link>
-        </div>
-      </div>
+      <NeoPageHeader
+        title="Dashboard"
+        description="Overview of your net worth, accounts, and recent activity."
+        eyebrow="Fintrack overview"
+        icon="📈"
+        actions={
+          <>
+            <Link to="/accounts">
+              <Button variant="secondary">Manage Accounts</Button>
+            </Link>
+            <Link to="/transactions/new">
+              <Button>Add Transaction</Button>
+            </Link>
+          </>
+        }
+      />
 
       {isLoading ? (
         <div className="space-y-6">
@@ -81,16 +84,18 @@ export function DashboardPage() {
 
       {!isLoading && netWorth !== null ? (
         <>
-          <Card>
-            <p className="text-sm font-medium text-slate-500">Net Worth</p>
-            <p className="mt-2 text-4xl font-bold text-slate-950">
-              {formatIDR(netWorth)}
-            </p>
-          </Card>
+          <NeoStatCard
+            label="Net Worth"
+            value={formatIDR(netWorth)}
+            icon="💰"
+            tone="blue"
+          />
 
           <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
             <Card>
-              <p className="font-semibold text-slate-950">Account Balances</p>
+              <p className="font-semibold text-slate-950 dark:text-slate-100">
+                Account Balances
+              </p>
               {accounts?.length === 0 ? (
                 <div className="mt-4">
                   <p className="text-sm text-slate-500">No accounts yet.</p>
@@ -108,12 +113,12 @@ export function DashboardPage() {
                       className="flex items-center justify-between"
                     >
                       <div>
-                        <p className="text-sm font-medium text-slate-950">
+                        <p className="text-sm font-medium text-slate-950 dark:text-slate-100">
                           {account.name}
                         </p>
                         <p className="text-xs text-slate-500">{account.type}</p>
                       </div>
-                      <p className="text-sm font-semibold text-slate-950">
+                      <p className="text-sm font-semibold text-slate-950 dark:text-slate-100">
                         {formatIDR(account.balance)}
                       </p>
                     </li>
@@ -123,7 +128,7 @@ export function DashboardPage() {
             </Card>
 
             <Card>
-              <p className="font-semibold text-slate-950">
+              <p className="font-semibold text-slate-950 dark:text-slate-100">
                 Spending This Month
               </p>
               {totalSpending === null || totalSpending === 0 ? (
@@ -138,7 +143,7 @@ export function DashboardPage() {
             </Card>
 
             <Card>
-              <p className="font-semibold text-slate-950">
+              <p className="font-semibold text-slate-950 dark:text-slate-100">
                 Recent Transactions
               </p>
               {transactions.length === 0 ? (
@@ -160,7 +165,7 @@ export function DashboardPage() {
                       className="flex items-center justify-between"
                     >
                       <div className="min-w-0 flex-1">
-                        <p className="truncate text-sm font-medium text-slate-950">
+                        <p className="truncate text-sm font-medium text-slate-950 dark:text-slate-100">
                           {tx.category?.name ?? tx.description ?? tx.type}
                         </p>
                         <p className="text-xs text-slate-500">
@@ -179,7 +184,7 @@ export function DashboardPage() {
               {transactions.length > 5 ? (
                 <Link
                   to="/transactions"
-                  className="mt-3 block text-sm font-medium text-blue-700"
+                  className="neo-link mt-3 block text-sm"
                 >
                   View all transactions
                 </Link>
@@ -191,15 +196,16 @@ export function DashboardPage() {
 
       {!isLoading && netWorth === null ? (
         <Card>
-          <div className="rounded-xl border border-dashed border-slate-300 p-8 text-center">
-            <p className="font-semibold text-slate-950">No accounts yet</p>
-            <p className="mt-2 text-sm text-slate-500">
-              Add your first account to start tracking your net worth.
-            </p>
-            <Link to="/accounts">
-              <Button className="mt-4">Add Account</Button>
-            </Link>
-          </div>
+          <NeoEmptyState
+            title="No accounts yet"
+            description="Add your first account to start tracking your net worth."
+            icon="🏦"
+            action={
+              <Link to="/accounts">
+                <Button>Add Account</Button>
+              </Link>
+            }
+          />
         </Card>
       ) : null}
     </div>

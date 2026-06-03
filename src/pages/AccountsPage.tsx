@@ -3,6 +3,12 @@ import { Link } from "react-router-dom";
 import { Button } from "../components/common/Button";
 import { Card } from "../components/common/Card";
 import { ConfirmDialog } from "../components/common/ConfirmDialog";
+import { NeoBadge } from "../components/common/NeoBadge";
+import { NeoEmptyState } from "../components/common/NeoEmptyState";
+import { NeoInput } from "../components/common/NeoInput";
+import { NeoPageHeader } from "../components/common/NeoPageHeader";
+import { NeoStatCard } from "../components/common/NeoStatCard";
+import { NeoTable } from "../components/common/NeoTable";
 import { Skeleton } from "../components/common/Skeleton";
 import { usePageTitle } from "../utils/usePageTitle";
 import { useAccountStore } from "../stores/accountStore";
@@ -62,6 +68,8 @@ export function AccountsPage() {
     .filter((account) => account.is_active)
     .reduce((sum, account) => sum + account.balance, 0);
 
+  type AccountRow = (typeof accounts)[number];
+
   function actionButtons(account: {
     id: string;
     name: string;
@@ -71,7 +79,7 @@ export function AccountsPage() {
       return (
         <div className="flex gap-2">
           <button
-            className="text-sm font-medium text-blue-700 disabled:opacity-50"
+            className="neo-link text-sm disabled:opacity-50"
             onClick={() => handleSaveEdit(account.id)}
             disabled={isSavingEdit}
           >
@@ -107,7 +115,7 @@ export function AccountsPage() {
     return (
       <div className="flex gap-2">
         <button
-          className="text-sm font-medium text-blue-700"
+          className="neo-link text-sm"
           onClick={() => startEdit(account.id, account.name)}
         >
           Edit
@@ -122,27 +130,71 @@ export function AccountsPage() {
     );
   }
 
+  const accountColumns = [
+    {
+      key: "name",
+      header: "Name",
+      cell: (account: AccountRow) =>
+        editID === account.id ? (
+          <NeoInput
+            className="mt-0 max-w-48 px-2 py-1"
+            value={editName}
+            onChange={(e) => setEditName(e.target.value)}
+            autoFocus
+          />
+        ) : (
+          <span className="font-medium">{account.name}</span>
+        ),
+    },
+    {
+      key: "type",
+      header: "Type",
+      className: "capitalize",
+      cell: (account: AccountRow) => account.type,
+    },
+    {
+      key: "balance",
+      header: "Balance",
+      className: "font-semibold",
+      cell: (account: AccountRow) => formatIDR(account.balance),
+    },
+    {
+      key: "status",
+      header: "Status",
+      cell: (account: AccountRow) => (
+        <NeoBadge variant={account.is_active ? "success" : "neutral"}>
+          {account.is_active ? "Active" : "Inactive"}
+        </NeoBadge>
+      ),
+    },
+    {
+      key: "actions",
+      header: "Actions",
+      cell: (account: AccountRow) => actionButtons(account),
+    },
+  ];
+
   return (
     <div className="space-y-6">
-      <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
-        <div>
-          <h1 className="text-2xl font-bold text-slate-950">Accounts</h1>
-          <p className="text-sm text-slate-500">
-            Manage bank accounts, e-wallets, cash, gold, and broker balances.
-          </p>
-        </div>
-        <Link to="/accounts/new">
-          <Button>Add Account</Button>
-        </Link>
-      </div>
+      <NeoPageHeader
+        title="Accounts"
+        description="Manage bank accounts, e-wallets, cash, gold, and broker balances."
+        eyebrow="Balance center"
+        icon="🏦"
+        actions={
+          <Link to="/accounts/new">
+            <Button>Add Account</Button>
+          </Link>
+        }
+      />
 
       {accounts.length > 0 ? (
-        <Card>
-          <p className="text-sm font-medium text-slate-500">Total Balance</p>
-          <p className="mt-1 text-2xl font-bold text-slate-950">
-            {formatIDR(totalBalance)}
-          </p>
-        </Card>
+        <NeoStatCard
+          label="Total Balance"
+          value={formatIDR(totalBalance)}
+          icon="💳"
+          tone="emerald"
+        />
       ) : null}
 
       {isLoading ? (
@@ -157,94 +209,52 @@ export function AccountsPage() {
         </Card>
       ) : accounts.length === 0 ? (
         <Card>
-          <div className="rounded-xl border border-dashed border-slate-300 p-8 text-center">
-            <p className="font-semibold text-slate-950">No accounts yet</p>
-            <p className="mt-2 text-sm text-slate-500">
-              Add your first account to track your net worth and transactions.
-            </p>
-            <Link to="/accounts/new">
-              <Button className="mt-4">Add Account</Button>
-            </Link>
-          </div>
+          <NeoEmptyState
+            title="No accounts yet"
+            description="Add your first account to track your net worth and transactions."
+            icon="🏦"
+            action={
+              <Link to="/accounts/new">
+                <Button>Add Account</Button>
+              </Link>
+            }
+          />
         </Card>
       ) : (
         <Card>
-          <div className="hidden md:block">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-slate-200 text-left text-sm text-slate-500">
-                  <th className="pb-3 font-medium">Name</th>
-                  <th className="pb-3 font-medium">Type</th>
-                  <th className="pb-3 font-medium">Balance</th>
-                  <th className="pb-3 font-medium">Status</th>
-                  <th className="pb-3 font-medium">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {accounts.map((account) => (
-                  <tr
-                    key={account.id}
-                    className={`border-b border-slate-100 text-sm ${!account.is_active ? "text-slate-400" : ""}`}
-                  >
-                    <td className="py-3">
-                      {editID === account.id ? (
-                        <input
-                          className="rounded-lg border border-slate-300 px-2 py-1"
-                          value={editName}
-                          onChange={(e) => setEditName(e.target.value)}
-                          autoFocus
-                        />
-                      ) : (
-                        <span className="font-medium">{account.name}</span>
-                      )}
-                    </td>
-                    <td className="py-3 capitalize">{account.type}</td>
-                    <td className="py-3 font-semibold">
-                      {formatIDR(account.balance)}
-                    </td>
-                    <td className="py-3">
-                      <span
-                        className={`rounded-full px-2 py-0.5 text-xs font-medium ${account.is_active ? "bg-green-50 text-green-700" : "bg-slate-100 text-slate-500"}`}
-                      >
-                        {account.is_active ? "Active" : "Inactive"}
-                      </span>
-                    </td>
-                    <td className="py-3">{actionButtons(account)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          <NeoTable
+            columns={accountColumns}
+            data={accounts}
+            getRowKey={(account) => account.id}
+            rowClassName={(account) =>
+              !account.is_active ? "text-slate-400" : ""
+            }
+          />
 
           <div className="space-y-3 md:hidden">
             {accounts.map((account) => (
-              <div
-                key={account.id}
-                className="rounded-xl border border-slate-200 p-4"
-              >
+              <div key={account.id} className="neo-surface rounded-xl p-4">
                 <div className="flex items-center justify-between">
                   {editID === account.id ? (
-                    <input
-                      className="rounded-lg border border-slate-300 px-2 py-1"
+                    <NeoInput
+                      className="mt-0 max-w-44 px-2 py-1"
                       value={editName}
                       onChange={(e) => setEditName(e.target.value)}
                       autoFocus
                     />
                   ) : (
-                    <p className="font-semibold text-slate-950">
+                    <p className="font-semibold text-slate-950 dark:text-slate-100">
                       {account.name}
                     </p>
                   )}
-                  <span
-                    className={`rounded-full px-2 py-0.5 text-xs font-medium ${account.is_active ? "bg-green-50 text-green-700" : "bg-slate-100 text-slate-500"}`}
-                  >
+                  <NeoBadge variant={account.is_active ? "success" : "neutral"}>
                     {account.is_active ? "Active" : "Inactive"}
-                  </span>
+                  </NeoBadge>
                 </div>
                 <p className="mt-1 text-xs capitalize text-slate-500">
                   {account.type}
                 </p>
-                <p className="mt-2 text-lg font-bold text-slate-950">
+                <p className="mt-2 text-lg font-bold text-slate-950 dark:text-slate-100">
                   {formatIDR(account.balance)}
                 </p>
                 <div className="mt-3">{actionButtons(account)}</div>

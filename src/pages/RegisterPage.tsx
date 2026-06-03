@@ -1,7 +1,10 @@
 import { FormEvent, useState } from "react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import { Button } from "../components/common/Button";
+import { NeoAlert } from "../components/common/NeoAlert";
+import { NeoInput } from "../components/common/NeoInput";
 import { useAuthStore } from "../stores/authStore";
+import { useTheme } from "../stores/themeStore";
 import {
   getErrorMessage,
   getValidationErrors,
@@ -17,6 +20,7 @@ export function RegisterPage() {
   const login = useAuthStore((state) => state.login);
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const isLoading = useAuthStore((state) => state.isLoading);
+  const { isDark, toggle } = useTheme();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -50,26 +54,37 @@ export function RegisterPage() {
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-slate-50 px-4 py-12">
-      <section className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
+    <main className="flex min-h-screen items-center justify-center px-4 py-12">
+      <section className="neo-card w-full max-w-md bg-blue-100 p-8 dark:bg-slate-800">
         <div className="mb-8 text-center">
-          <h1 className="text-3xl font-bold text-slate-950">Create Account</h1>
-          <p className="mt-2 text-sm text-slate-500">
+          <div className="flex items-center justify-between">
+            <h1 className="text-4xl font-black uppercase text-slate-950 dark:text-slate-100">
+              Create Account
+            </h1>
+            <button
+              className="neo-button bg-blue-300 px-3 py-1 dark:text-slate-950"
+              onClick={toggle}
+            >
+              {isDark ? "☀️" : "🌙"}
+            </button>
+          </div>
+          <p className="mt-2 text-sm font-bold text-slate-600 dark:text-slate-300">
             Start tracking your personal finances
           </p>
         </div>
 
         {formError ? (
-          <div className="mb-4 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">
+          <NeoAlert className="mb-4" variant="danger">
             {formError}
-          </div>
+          </NeoAlert>
         ) : null}
 
         <form className="space-y-4" onSubmit={handleSubmit}>
           <label className="block">
-            <span className="text-sm font-medium text-slate-700">Email</span>
-            <input
-              className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+            <span className="text-sm font-medium text-slate-700 dark:text-slate-300">
+              Email
+            </span>
+            <NeoInput
               type="email"
               value={email}
               onChange={(event) => setEmail(event.target.value)}
@@ -83,9 +98,10 @@ export function RegisterPage() {
             ) : null}
           </label>
           <label className="block">
-            <span className="text-sm font-medium text-slate-700">Password</span>
-            <input
-              className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+            <span className="text-sm font-medium text-slate-700 dark:text-slate-300">
+              Password
+            </span>
+            <NeoInput
               type="password"
               value={password}
               onChange={(event) => setPassword(event.target.value)}
@@ -99,11 +115,10 @@ export function RegisterPage() {
             ) : null}
           </label>
           <label className="block">
-            <span className="text-sm font-medium text-slate-700">
+            <span className="text-sm font-medium text-slate-700 dark:text-slate-300">
               Confirm Password
             </span>
-            <input
-              className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+            <NeoInput
               type="password"
               value={confirmPassword}
               onChange={(event) => setConfirmPassword(event.target.value)}
@@ -120,9 +135,9 @@ export function RegisterPage() {
             {isLoading ? "Creating account..." : "Register"}
           </Button>
         </form>
-        <p className="mt-6 text-center text-sm text-slate-600">
+        <p className="mt-6 text-center text-sm text-slate-600 dark:text-slate-400">
           Already have an account?{" "}
-          <Link className="font-medium text-blue-700" to="/login">
+          <Link className="neo-link" to="/login">
             Login
           </Link>
         </p>

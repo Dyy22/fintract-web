@@ -2,6 +2,10 @@ import { FormEvent, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "../components/common/Button";
 import { Card } from "../components/common/Card";
+import { NeoAlert } from "../components/common/NeoAlert";
+import { NeoInput } from "../components/common/NeoInput";
+import { NeoPageHeader } from "../components/common/NeoPageHeader";
+import { NeoSelect } from "../components/common/NeoSelect";
 import { useAccountStore } from "../stores/accountStore";
 import {
   getErrorMessage,
@@ -25,6 +29,19 @@ export function NewAccountPage() {
   useEffect(() => {
     fetchAccountTypes();
   }, [fetchAccountTypes]);
+
+  const accountTypeOptions = [
+    { value: "", label: "Select account type" },
+    ...accountTypes.map((type) => ({
+      value: String(type.id),
+      label:
+        type.name === "ewallet"
+          ? "E-Wallet"
+          : type.name
+              .replace(/_/g, " ")
+              .replace(/\b\w/g, (character) => character.toUpperCase()),
+    })),
+  ];
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -51,23 +68,22 @@ export function NewAccountPage() {
 
   return (
     <div className="mx-auto max-w-2xl space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-slate-950">Add Account</h1>
-        <p className="text-sm text-slate-500">
-          Add a new bank, e-wallet, cash, gold, or brokerage account.
-        </p>
-      </div>
+      <NeoPageHeader
+        title="Add Account"
+        description="Add a new bank, e-wallet, cash, gold, or brokerage account."
+        eyebrow="New balance source"
+        icon="➕"
+      />
       <Card>
         {formError && (
-          <div className="mb-4 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">
+          <NeoAlert className="mb-4" variant="danger">
             {formError}
-          </div>
+          </NeoAlert>
         )}
         <form className="space-y-4" onSubmit={handleSubmit}>
           <label className="block">
             <span className="text-sm font-medium text-slate-700">Name</span>
-            <input
-              className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+            <NeoInput
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
@@ -83,26 +99,13 @@ export function NewAccountPage() {
             <span className="text-sm font-medium text-slate-700">
               Account Type
             </span>
-            <select
-              className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+            <NeoSelect
+              className="mt-1"
               value={accountTypeID}
-              onChange={(e) => setAccountTypeID(e.target.value)}
-            >
-              <option value="">Select account type</option>
-              {accountTypes.map((type) => {
-                const label =
-                  type.name === "ewallet"
-                    ? "E-Wallet"
-                    : type.name
-                        .replace(/_/g, " ")
-                        .replace(/\b\w/g, (c) => c.toUpperCase());
-                return (
-                  <option key={type.id} value={type.id}>
-                    {label}
-                  </option>
-                );
-              })}
-            </select>
+              options={accountTypeOptions}
+              onChange={(value) => setAccountTypeID(value)}
+              placeholder="Select account type"
+            />
             {fieldErrors.account_type_id && (
               <span className="mt-1 block text-sm text-red-600">
                 {fieldErrors.account_type_id}
@@ -113,8 +116,7 @@ export function NewAccountPage() {
             <span className="text-sm font-medium text-slate-700">
               Initial Balance
             </span>
-            <input
-              className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+            <NeoInput
               type="number"
               value={balance}
               onChange={(e) => setBalance(e.target.value)}

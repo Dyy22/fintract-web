@@ -2,6 +2,12 @@ import { FormEvent, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "../components/common/Button";
 import { Card } from "../components/common/Card";
+import { NeoAlert } from "../components/common/NeoAlert";
+import { NeoDateInput } from "../components/common/NeoDateInput";
+import { NeoInput } from "../components/common/NeoInput";
+import { NeoPageHeader } from "../components/common/NeoPageHeader";
+import { NeoSelect } from "../components/common/NeoSelect";
+import { NeoTextarea } from "../components/common/NeoTextarea";
 import { useAccountStore } from "../stores/accountStore";
 import { useCategoryStore } from "../stores/categoryStore";
 import { useTransactionStore } from "../stores/transactionStore";
@@ -10,6 +16,7 @@ import {
   getValidationErrors,
   type FormErrors,
 } from "../utils/apiError";
+import { getTodayDateInputValue } from "../utils/dateInput";
 
 type TransactionType = "expense" | "income" | "transfer";
 
@@ -27,10 +34,9 @@ export function NewTransactionPage() {
   const [transferAccountID, setTransferAccountID] = useState("");
   const [categoryID, setCategoryID] = useState("");
   const [amount, setAmount] = useState("");
-  const [date, setDate] = useState(
-    () => new Date().toISOString().split("T")[0],
-  );
+  const [date, setDate] = useState(() => getTodayDateInputValue());
   const [description, setDescription] = useState("");
+  const maxDate = getTodayDateInputValue();
   const [fieldErrors, setFieldErrors] = useState<FormErrors>({});
   const [formError, setFormError] = useState("");
 
@@ -39,9 +45,30 @@ export function NewTransactionPage() {
     fetchCategories();
   }, [fetchAccounts, fetchCategories]);
 
+  const activeAccounts = accounts.filter((account) => account.is_active);
+  const accountOptions = [
+    { value: "", label: "Select account" },
+    ...activeAccounts.map((account) => ({
+      value: account.id,
+      label: account.name,
+    })),
+  ];
+  const transferAccountOptions = [
+    { value: "", label: "Select destination account" },
+    ...activeAccounts
+      .filter((account) => account.id !== accountID)
+      .map((account) => ({ value: account.id, label: account.name })),
+  ];
   const filteredCategories = categories.filter(
     (c) => c.type === type || type === "transfer",
   );
+  const categoryOptions = [
+    { value: "", label: "Select category" },
+    ...filteredCategories.map((category) => ({
+      value: category.id,
+      label: category.name,
+    })),
+  ];
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -52,6 +79,7 @@ export function NewTransactionPage() {
     if (!accountID) errors.account_id = "is required";
     if (!amount || Number(amount) <= 0)
       errors.amount = "must be greater than 0";
+    if (date > maxDate) errors.date = "cannot be in the future";
     if (type === "transfer") {
       if (!transferAccountID) errors.transfer_account_id = "is required";
     } else {
@@ -94,18 +122,18 @@ export function NewTransactionPage() {
 
   return (
     <div className="mx-auto max-w-2xl space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-slate-950">Add Transaction</h1>
-        <p className="text-sm text-slate-500">
-          Create income, expense, or transfer records.
-        </p>
-      </div>
+      <NeoPageHeader
+        title="Add Transaction"
+        description="Create income, expense, or transfer records."
+        eyebrow="New money movement"
+        icon="➕"
+      />
 
       <Card>
         {formError ? (
-          <div className="mb-4 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">
+          <NeoAlert className="mb-4" variant="danger">
             {formError}
-          </div>
+          </NeoAlert>
         ) : null}
 
         <form className="space-y-4" onSubmit={handleSubmit}>
@@ -129,20 +157,16 @@ export function NewTransactionPage() {
             <span className="text-sm font-medium text-slate-700">
               {type === "transfer" ? "Source Account" : "Account"}
             </span>
-            <select
-              className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2"
+            <NeoSelect
+              className="mt-1"
               value={accountID}
-              onChange={(e) => setAccountID(e.target.value)}
-            >
-              <option value="">Select account</option>
-              {accounts
-                .filter((a) => a.is_active)
-                .map((a) => (
-                  <option key={a.id} value={a.id}>
-                    {a.name}
-                  </option>
-                ))}
-            </select>
+              options={accountOptions}
+              onChange={(value) => {
+                setAccountID(value);
+                if (transferAccountID === value) setTransferAccountID("");
+              }}
+              placeholder="Select account"
+            />
             {fieldErrors.account_id ? (
               <span className="mt-1 block text-sm text-red-600">
                 {fieldErrors.account_id}
@@ -155,20 +179,13 @@ export function NewTransactionPage() {
               <span className="text-sm font-medium text-slate-700">
                 Destination Account
               </span>
-              <select
-                className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2"
+              <NeoSelect
+                className="mt-1"
                 value={transferAccountID}
-                onChange={(e) => setTransferAccountID(e.target.value)}
-              >
-                <option value="">Select destination account</option>
-                {accounts
-                  .filter((a) => a.is_active && a.id !== accountID)
-                  .map((a) => (
-                    <option key={a.id} value={a.id}>
-                      {a.name}
-                    </option>
-                  ))}
-              </select>
+                options={transferAccountOptions}
+                onChange={(value) => setTransferAccountID(value)}
+                placeholder="Select destination account"
+              />
               {fieldErrors.transfer_account_id ? (
                 <span className="mt-1 block text-sm text-red-600">
                   {fieldErrors.transfer_account_id}
@@ -182,18 +199,13 @@ export function NewTransactionPage() {
               <span className="text-sm font-medium text-slate-700">
                 Category
               </span>
-              <select
-                className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2"
+              <NeoSelect
+                className="mt-1"
                 value={categoryID}
-                onChange={(e) => setCategoryID(e.target.value)}
-              >
-                <option value="">Select category</option>
-                {filteredCategories.map((c) => (
-                  <option key={c.id} value={c.id}>
-                    {c.name}
-                  </option>
-                ))}
-              </select>
+                options={categoryOptions}
+                onChange={(value) => setCategoryID(value)}
+                placeholder="Select category"
+              />
               {fieldErrors.category_id ? (
                 <span className="mt-1 block text-sm text-red-600">
                   {fieldErrors.category_id}
@@ -204,8 +216,7 @@ export function NewTransactionPage() {
 
           <label className="block">
             <span className="text-sm font-medium text-slate-700">Amount</span>
-            <input
-              className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+            <NeoInput
               type="number"
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
@@ -220,11 +231,11 @@ export function NewTransactionPage() {
 
           <label className="block">
             <span className="text-sm font-medium text-slate-700">Date</span>
-            <input
-              className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-              type="date"
+            <NeoDateInput
+              className="mt-1"
               value={date}
-              onChange={(e) => setDate(e.target.value)}
+              max={maxDate}
+              onChange={(value) => setDate(value)}
             />
             {fieldErrors.date ? (
               <span className="mt-1 block text-sm text-red-600">
@@ -237,8 +248,7 @@ export function NewTransactionPage() {
             <span className="text-sm font-medium text-slate-700">
               Description
             </span>
-            <textarea
-              className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+            <NeoTextarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Lunch"

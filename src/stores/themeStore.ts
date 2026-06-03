@@ -1,34 +1,40 @@
-import { create } from "zustand";
+import { useSyncExternalStore } from "react";
 
-type ThemeState = {
-  isDark: boolean;
-  toggle: () => void;
-};
+const THEME_KEY = "fintrack_theme";
 
-function getInitialTheme(): boolean {
-  if (typeof window === "undefined") return false;
-  const stored = localStorage.getItem("fintrack_theme");
-  if (stored === "dark") return true;
-  if (stored === "light") return false;
-  return window.matchMedia("(prefers-color-scheme: dark)").matches;
+function getIsDark(): boolean {
+  return document.documentElement.classList.contains("dark");
 }
 
-function applyTheme(isDark: boolean) {
-  document.documentElement.classList.toggle("dark", isDark);
+function subscribeToTheme(callback: () => void): () => void {
+  const observer = new MutationObserver(() => {
+    callback();
+  });
+  observer.observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ["class"],
+  });
+  return () => observer.disconnect();
 }
 
-export const useThemeStore = create<ThemeState>((set) => {
-  const initial = getInitialTheme();
-  applyTheme(initial);
+function getSnapshot(): boolean {
+  return getIsDark();
+}
 
-  return {
-    isDark: initial,
-    toggle: () =>
-      set((state) => {
-        const next = !state.isDark;
-        localStorage.setItem("fintrack_theme", next ? "dark" : "light");
-        applyTheme(next);
-        return { isDark: next };
-      }),
-  };
-});
+export function useTheme() {
+  const isDark = useSyncExternalStore(subscribeToTheme, getSnapshot);
+
+  function toggle() {
+    const root = document.documentElement;
+    const hasDark = root.classList.contains("dark");
+    if (hasDark) {
+      root.classList.remove("dark");
+      localStorage.setItem(THEME_KEY, "light");
+    } else {
+      root.classList.add("dark");
+      localStorage.setItem(THEME_KEY, "dark");
+    }
+  }
+
+  return { isDark, toggle };
+}

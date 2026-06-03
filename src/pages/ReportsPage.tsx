@@ -1,7 +1,16 @@
 import { useEffect, useState } from "react";
 import { Card } from "../components/common/Card";
+import { NeoDateInput } from "../components/common/NeoDateInput";
+import { NeoEmptyState } from "../components/common/NeoEmptyState";
+import { NeoPageHeader } from "../components/common/NeoPageHeader";
+import { NeoProgress } from "../components/common/NeoProgress";
+import { NeoStatCard } from "../components/common/NeoStatCard";
 import { SkeletonCard } from "../components/common/Skeleton";
 import { useReportStore } from "../stores/reportStore";
+import {
+  clampFutureDateInput,
+  getTodayDateInputValue,
+} from "../utils/dateInput";
 import { formatIDR } from "../utils/format";
 
 import { usePageTitle } from "../utils/usePageTitle";
@@ -21,8 +30,13 @@ export function ReportsPage() {
     fetchSpending,
   } = useReportStore();
 
-  const [localStartDate, setLocalStartDate] = useState(spendingStartDate);
-  const [localEndDate, setLocalEndDate] = useState(spendingEndDate);
+  const maxDate = getTodayDateInputValue();
+  const [localStartDate, setLocalStartDate] = useState(() =>
+    clampFutureDateInput(spendingStartDate, maxDate),
+  );
+  const [localEndDate, setLocalEndDate] = useState(() =>
+    clampFutureDateInput(spendingEndDate, maxDate),
+  );
 
   const isLoading = isLoadingWorth || isLoadingSpending;
 
@@ -32,17 +46,21 @@ export function ReportsPage() {
   }, [fetchNetWorth, fetchSpending, spendingStartDate, spendingEndDate]);
 
   function handleApply() {
-    fetchSpending(localStartDate, localEndDate);
+    const startDate = clampFutureDateInput(localStartDate, maxDate);
+    const endDate = clampFutureDateInput(localEndDate, maxDate);
+    setLocalStartDate(startDate);
+    setLocalEndDate(endDate);
+    fetchSpending(startDate, endDate);
   }
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-slate-950">Reports</h1>
-        <p className="text-sm text-slate-500">
-          Analyze net worth and spending by category.
-        </p>
-      </div>
+      <NeoPageHeader
+        title="Reports"
+        description="Analyze net worth and spending by category."
+        eyebrow="Financial insights"
+        icon="📊"
+      />
 
       {isLoading ? (
         <div className="space-y-6">
@@ -51,47 +69,49 @@ export function ReportsPage() {
         </div>
       ) : (
         <>
-          <Card>
-            <p className="text-sm font-medium text-slate-500">Net Worth</p>
-            <p className="mt-2 text-3xl font-bold text-slate-950">
-              {netWorth !== null ? formatIDR(netWorth) : "-"}
-            </p>
-            {activeAccounts.length > 0 && (
-              <div className="mt-4 space-y-2">
-                {activeAccounts.map((account) => (
-                  <div
-                    key={account.id}
-                    className="flex items-center justify-between text-sm"
-                  >
-                    <span className="text-slate-600">{account.name}</span>
-                    <span className="font-semibold text-slate-950">
-                      {formatIDR(account.balance)}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            )}
-          </Card>
+          <NeoStatCard
+            label="Net Worth"
+            value={netWorth !== null ? formatIDR(netWorth) : "-"}
+            icon="💰"
+            tone="blue"
+            helper={
+              activeAccounts.length > 0 ? (
+                <div className="space-y-2">
+                  {activeAccounts.map((account) => (
+                    <div
+                      key={account.id}
+                      className="flex items-center justify-between gap-4 text-sm"
+                    >
+                      <span className="text-slate-600 dark:text-slate-200">
+                        {account.name}
+                      </span>
+                      <span className="font-black text-slate-950 dark:text-slate-100">
+                        {formatIDR(account.balance)}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              ) : null
+            }
+          />
 
           <Card>
             <p className="text-sm font-medium text-slate-500 mb-4">
               Spending by Category
             </p>
             <div className="grid gap-3 sm:grid-cols-[1fr_1fr_auto]">
-              <input
-                className="rounded-lg border border-slate-300 px-3 py-2"
-                type="date"
+              <NeoDateInput
                 value={localStartDate}
-                onChange={(e) => setLocalStartDate(e.target.value)}
+                max={maxDate}
+                onChange={(value) => setLocalStartDate(value)}
               />
-              <input
-                className="rounded-lg border border-slate-300 px-3 py-2"
-                type="date"
+              <NeoDateInput
                 value={localEndDate}
-                onChange={(e) => setLocalEndDate(e.target.value)}
+                max={maxDate}
+                onChange={(value) => setLocalEndDate(value)}
               />
               <button
-                className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+                className="neo-button bg-blue-300 dark:text-slate-950"
                 onClick={handleApply}
               >
                 Apply
@@ -108,20 +128,15 @@ export function ReportsPage() {
                   {spendingCategories.map((category) => (
                     <div key={category.name}>
                       <div className="flex items-center justify-between text-sm">
-                        <span className="font-medium text-slate-950">
+                        <span className="font-medium text-slate-950 dark:text-slate-100">
                           {category.name}
                         </span>
-                        <span className="font-semibold text-slate-950">
+                        <span className="font-semibold text-slate-950 dark:text-slate-100">
                           {formatIDR(category.amount)}
                         </span>
                       </div>
                       <div className="mt-1 flex items-center gap-2">
-                        <div className="h-2 flex-1 rounded-full bg-slate-100">
-                          <div
-                            className="h-2 rounded-full bg-blue-600"
-                            style={{ width: `${category.percentage}%` }}
-                          />
-                        </div>
+                        <NeoProgress value={category.percentage} />
                         <span className="text-xs text-slate-500">
                           {category.percentage.toFixed(0)}%
                         </span>
@@ -131,10 +146,12 @@ export function ReportsPage() {
                 </div>
               </>
             ) : (
-              <div className="mt-6 rounded-xl border border-dashed border-slate-300 p-8 text-center text-sm text-slate-500">
-                No spending data for this period. Add expense transactions to
-                see category breakdown.
-              </div>
+              <NeoEmptyState
+                className="mt-6"
+                title="No spending data"
+                description="No spending data for this period. Add expense transactions to see category breakdown."
+                icon="📊"
+              />
             )}
           </Card>
         </>

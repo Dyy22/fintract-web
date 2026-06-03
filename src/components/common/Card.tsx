@@ -5,11 +5,5 @@ type CardProps = PropsWithChildren<{
 }>;
 
 export function Card({ children, className = "" }: CardProps) {
-  return (
-    <div
-      className={`rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800 ${className}`}
-    >
-      {children}
-    </div>
-  );
+  return <div className={`neo-card p-6 ${className}`}>{children}</div>;
 }

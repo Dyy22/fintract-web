@@ -1,7 +1,10 @@
 import { FormEvent, useState } from "react";
 import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "../components/common/Button";
+import { NeoAlert } from "../components/common/NeoAlert";
+import { NeoInput } from "../components/common/NeoInput";
 import { useAuthStore } from "../stores/authStore";
+import { useTheme } from "../stores/themeStore";
 import {
   getErrorMessage,
   getValidationErrors,
@@ -25,6 +28,7 @@ export function LoginPage() {
   const login = useAuthStore((state) => state.login);
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const isLoading = useAuthStore((state) => state.isLoading);
+  const { isDark, toggle } = useTheme();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fieldErrors, setFieldErrors] = useState<FormErrors>({});
@@ -51,24 +55,34 @@ export function LoginPage() {
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-slate-50 px-4 py-12">
-      <section className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
+    <main className="flex min-h-screen items-center justify-center px-4 py-12">
+      <section className="neo-card w-full max-w-md bg-blue-100 p-8 dark:bg-slate-800">
         <div className="mb-8 text-center">
-          <h1 className="text-3xl font-bold text-slate-950">Fintrack</h1>
-          <p className="mt-2 text-sm text-slate-500">
+          <div className="flex items-center justify-between">
+            <h1 className="text-4xl font-black uppercase text-slate-950 dark:text-slate-100">
+              Fintrack
+            </h1>
+            <button
+              className="neo-button bg-blue-300 px-3 py-1 dark:text-slate-950"
+              onClick={toggle}
+            >
+              {isDark ? "☀️" : "🌙"}
+            </button>
+          </div>
+          <p className="mt-2 text-sm font-bold text-slate-600 dark:text-slate-300">
             Private personal finance tracker
           </p>
         </div>
 
         {locationState?.message ? (
-          <div className="mb-4 rounded-lg bg-green-50 px-4 py-3 text-sm text-green-700">
+          <NeoAlert className="mb-4" variant="success">
             {locationState.message}
-          </div>
+          </NeoAlert>
         ) : null}
         {formError ? (
-          <div className="mb-4 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">
+          <NeoAlert className="mb-4" variant="danger">
             {formError}
-          </div>
+          </NeoAlert>
         ) : null}
 
         <form className="space-y-4" onSubmit={handleSubmit}>
@@ -76,8 +90,7 @@ export function LoginPage() {
             <span className="text-sm font-medium text-slate-700 dark:text-slate-300">
               Email
             </span>
-            <input
-              className="mt-1 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
+            <NeoInput
               type="email"
               value={email}
               onChange={(event) => setEmail(event.target.value)}
@@ -94,8 +107,7 @@ export function LoginPage() {
             <span className="text-sm font-medium text-slate-700 dark:text-slate-300">
               Password
             </span>
-            <input
-              className="mt-1 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
+            <NeoInput
               type="password"
               value={password}
               onChange={(event) => setPassword(event.target.value)}
@@ -112,9 +124,9 @@ export function LoginPage() {
             {isLoading ? "Logging in..." : "Login"}
           </Button>
         </form>
-        <p className="mt-6 text-center text-sm text-slate-600">
+        <p className="mt-6 text-center text-sm text-slate-600 dark:text-slate-400">
           Don't have an account?{" "}
-          <Link className="font-medium text-blue-700" to="/register">
+          <Link className="neo-link" to="/register">
             Register
           </Link>
         </p>
