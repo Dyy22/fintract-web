@@ -51,22 +51,22 @@ export function LoginPage() {
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-background px-4 py-12">
-      <section className="w-full max-w-md border-2 border-border bg-secondary-background p-8 shadow-shadow">
+    <main className="flex min-h-screen items-center justify-center bg-slate-50 px-4 py-12">
+      <section className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
         <div className="mb-8 text-center">
-          <h1 className="text-3xl font-bold text-foreground">Fintrack</h1>
-          <p className="mt-2 text-sm text-foreground/60">
+          <h1 className="text-3xl font-bold text-slate-950">Fintrack</h1>
+          <p className="mt-2 text-sm text-slate-500">
             Private personal finance tracker
           </p>
         </div>
 
         {locationState?.message ? (
-          <div className="mb-4 rounded-lg bg-green-100 px-4 py-3 text-sm text-green-800">
+          <div className="mb-4 rounded-lg bg-green-50 px-4 py-3 text-sm text-green-700">
             {locationState.message}
           </div>
         ) : null}
         {formError ? (
-          <div className="mb-4 rounded-lg bg-red-100 px-4 py-3 text-sm text-red-800">
+          <div className="mb-4 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">
             {formError}
           </div>
         ) : null}

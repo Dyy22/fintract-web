@@ -2,36 +2,20 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-    :root {
-        --main: #2563eb;
-        --background: #f0f0f0;
-        --secondary-background: #ffffff;
-        --foreground: #000000;
-        --main-foreground: #ffffff;
-        --border: #000000;
-    }
-
-    .dark {
-        --main: #3b82f6;
-        --background: #1a1a2e;
-        --secondary-background: #16213e;
-        --foreground: #e0e0e0;
-        --main-foreground: #e0e0e0;
-        --border: #0f3460;
-    }
+:root {
+    color-scheme: light;
+    font-family: Inter, system-ui, sans-serif;
+    background: #f8fafc;
+    color: #0f172a;
 }
 
 body {
-    font-family: Inter, system-ui, sans-serif;
-    font-weight: 500;
     margin: 0;
     min-width: 320px;
     min-height: 100vh;
-    background: var(--background);
-    color: var(--foreground);
 }
 
+button,
 input,
 select,
 textarea {
@@ -40,11 +24,4 @@ textarea {
 
 input[type="date"]::-webkit-calendar-picker-indicator {
     cursor: pointer;
-}
-
-input:focus-visible,
-select:focus-visible,
-textarea:focus-visible {
-    outline: 2px solid var(--border);
-    outline-offset: 2px;
 }

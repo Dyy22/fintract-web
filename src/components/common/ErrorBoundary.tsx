@@ -45,16 +45,16 @@ export class ErrorBoundary extends Component<
       return (
         <div className="flex min-h-[200px] items-center justify-center p-8">
           <div className="text-center">
-            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center border-2 border-border bg-red-100 shadow-shadow-sm">
+            <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-red-100">
               <span className="text-2xl font-bold text-red-600">!</span>
             </div>
-            <h3 className="text-lg font-extrabold uppercase tracking-tight">
+            <h3 className="text-lg font-semibold text-slate-950">
               Something went wrong
             </h3>
-            <p className="mt-1 text-sm font-medium text-black/60 dark:text-brutal-dark-muted">
+            <p className="mt-1 text-sm text-slate-500">
               An unexpected error occurred. Please try again.
             </p>
-            <p className="mt-1 text-xs text-black/40 dark:text-brutal-dark-muted">
+            <p className="mt-1 text-xs text-slate-400">
               {this.state.error?.message}
             </p>
             <Button className="mt-4" onClick={this.handleRetry}>

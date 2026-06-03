@@ -15,21 +15,19 @@ export function ConfirmDialog({
 }) {
   if (!open) return null;
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-      <div className="w-full max-w-sm border-2 border-border bg-secondary-background p-6 shadow-shadow">
-        <h2 className="text-lg font-extrabold uppercase tracking-tight text-foreground">
-          {title}
-        </h2>
-        <p className="mt-2 text-sm font-medium text-foreground/70">{message}</p>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 p-4">
+      <div className="w-full max-w-sm rounded-2xl border border-slate-200 bg-white p-6 shadow-lg">
+        <h2 className="text-lg font-bold text-slate-950">{title}</h2>
+        <p className="mt-2 text-sm text-slate-600">{message}</p>
         <div className="mt-6 flex justify-end gap-2">
           <button
-            className="border-2 border-border bg-secondary-background px-4 py-2 text-sm font-bold uppercase tracking-tight text-foreground shadow-shadow-sm hover:bg-blue-100"
+            className="rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
             onClick={onCancel}
           >
             Cancel
           </button>
           <button
-            className="border-2 border-border bg-red-600 px-4 py-2 text-sm font-bold uppercase tracking-tight text-main-foreground shadow-shadow-sm hover:bg-red-700"
+            className="rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700"
             onClick={onConfirm}
           >
             {buttonLabel}
