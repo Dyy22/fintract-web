@@ -50,8 +50,8 @@ export function RegisterPage() {
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-slate-50 px-4 py-12">
-      <section className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
+    <main className="flex min-h-screen items-center justify-center bg-brutal-bg px-4 py-12 dark:bg-brutal-dark-bg">
+      <section className="w-full max-w-md border-2 border-black bg-white p-8 shadow-brutal dark:border-brutal-dark-border dark:bg-brutal-dark-surface">
         <div className="mb-8 text-center">
           <h1 className="text-3xl font-bold text-slate-950">Create Account</h1>
           <p className="mt-2 text-sm text-slate-500">

@@ -3,12 +3,18 @@ type SkeletonProps = {
 };
 
 export function Skeleton({ className = "" }: SkeletonProps) {
-  return <div className={`animate-pulse rounded-lg bg-slate-200 ${className}`} />;
+  return (
+    <div
+      className={`animate-pulse rounded-none bg-black/10 dark:bg-white/10 ${className}`}
+    />
+  );
 }
 
 export function SkeletonCard({ className = "" }: SkeletonProps) {
   return (
-    <div className={`rounded-2xl border border-slate-200 bg-white p-5 shadow-sm ${className}`}>
+    <div
+      className={`border-2 border-black bg-white p-5 shadow-brutal dark:border-brutal-dark-border dark:bg-brutal-dark-surface ${className}`}
+    >
       <Skeleton className="mb-3 h-4 w-24" />
       <Skeleton className="h-8 w-48" />
       <div className="mt-4 space-y-2">

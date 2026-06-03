@@ -1,19 +1,29 @@
-import type { ButtonHTMLAttributes, PropsWithChildren } from 'react';
+import type { ButtonHTMLAttributes, PropsWithChildren } from "react";
 
-type ButtonProps = PropsWithChildren<ButtonHTMLAttributes<HTMLButtonElement>> & {
-  variant?: 'primary' | 'secondary' | 'danger';
+type ButtonProps = PropsWithChildren<
+  ButtonHTMLAttributes<HTMLButtonElement>
+> & {
+  variant?: "primary" | "secondary" | "danger";
 };
 
 const variants = {
-  primary: 'bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500',
-  secondary: 'bg-white text-slate-700 border border-slate-300 hover:bg-slate-50 focus:ring-slate-400',
-  danger: 'bg-red-600 text-white hover:bg-red-700 focus:ring-red-500',
+  primary:
+    "bg-blue-600 text-white border-black hover:bg-blue-700 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none",
+  secondary:
+    "bg-white text-black border-black hover:bg-slate-100 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none",
+  danger:
+    "bg-red-600 text-white border-black hover:bg-red-700 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none",
 };
 
-export function Button({ children, className = '', variant = 'primary', ...props }: ButtonProps) {
+export function Button({
+  children,
+  className = "",
+  variant = "primary",
+  ...props
+}: ButtonProps) {
   return (
     <button
-      className={`inline-flex items-center justify-center rounded-lg px-4 py-2 text-sm font-medium shadow-sm transition focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60 ${variants[variant]} ${className}`}
+      className={`inline-flex items-center justify-center border-2 px-4 py-2 text-sm font-bold uppercase tracking-tight shadow-brutal-sm transition-all duration-75 focus:outline-none focus-visible:outline-3 focus-visible:outline-blue-500 disabled:cursor-not-allowed disabled:opacity-60 disabled:active:translate-x-0 disabled:active:translate-y-0 disabled:active:shadow-brutal-sm ${variants[variant]} ${className}`}
       {...props}
     >
       {children}
